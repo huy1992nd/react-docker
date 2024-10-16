@@ -1,11 +1,62 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import ContactAPI from '../API/ContactAPI';
 
-Contact.propTypes = {
 
-};
+Contact.propTypes = {};
 
 function Contact(props) {
+    // Khai báo state để lưu trữ dữ liệu từ form
+    const [formData, setFormData] = useState({
+        customerName: '',
+        customerEmail: '',
+        contactSubject: '',
+        contactMessage: '',
+    });
+
+    const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+
+    // Hàm xử lý khi form được submit
+    const handleSubmit = async (e) => {
+        e.preventDefault(); // Ngăn hành vi mặc định của form
+
+        // Kiểm tra các trường bắt buộc (Name và Email)
+        if (!formData.customerName || !formData.customerEmail) {
+            setError('Please fill in all required fields.');
+            return;
+        }
+
+        try {
+            // Gọi API với fetch hoặc axios
+            const response = await ContactAPI.send_mail(formData)
+            console.log('response send email', response);
+
+            if (response.status = 200) {
+                setSuccessMessage('Your message has been sent successfully!');
+                setFormData({
+                    customerName: '',
+                    customerEmail: '',
+                    contactSubject: '',
+                    contactMessage: '',
+                });
+            } else {
+                throw new Error('Failed to submit form');
+            }
+        } catch (error) {
+            setError('There was a problem submitting the form');
+        }
+    };
+
+    // Hàm xử lý khi người dùng thay đổi input
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+
     return (
         <div>
             <div className="breadcrumb-area">
@@ -20,7 +71,7 @@ function Contact(props) {
             </div>
             <div className="contact-main-page mt-60 mb-40 mb-md-40 mb-sm-40 mb-xs-40">
                 <div className="container mb-60">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.4602324215048!2d106.66521371480079!3d10.776019492321794!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752edba026cb75%3A0xb2a9aab49da1c58f!2zMTU1IFPGsCBW4bqhbiBI4bqhbmgsIFBoxrDhu51uZyAxMiwgUXXhuq1uIDEwLCBUaMOgbmggcGjhu5EgSOG7kyBDaMOtIE1pbmg!5e0!3m2!1sen!2s!4v1616422635333!5m2!1sen!2s" width="600" height="450" style={{ border: '0' }} allowfullscreen="" loading="lazy"></iframe>
+                    <iframe src="https://maps.google.com/maps?width=600&height=500&hl=en&q=8 cù chính lan, thanh xuân hà nội&t=&z=13&ie=UTF8&iwloc=B&output=embed" width="600" height="450" style={{ border: '0' }} allowFullScreen="" loading="lazy"></iframe>
                 </div>
                 <div className="container">
                     <div className="row">
@@ -32,16 +83,16 @@ function Contact(props) {
                                 </p>
                                 <div className="single-contact-block">
                                     <h4><i className="fa fa-fax"></i> Address</h4>
-                                    <p>155 Sư Vạn Hạnh, Phường 12, Quận 10, Thành phố Hồ Chí Minh</p>
+                                    <p>Số 8 Cù Chính Lan, Khương Thượng, Thanh Xuân, Hà Nội, Việt Nam</p>
                                 </div>
                                 <div className="single-contact-block">
                                     <h4><i className="fa fa-phone"></i> Phone</h4>
-                                    <p>Mobile: 0763557366</p>
+                                    <p>Mobile: 0393949169</p>
                                     <p>Hotline: 1900100 Biết</p>
                                 </div>
                                 <div className="single-contact-block last-child">
                                     <h4><i className="fa fa-envelope-o"></i> Email</h4>
-                                    <p>tienkim9920@gmail.com</p>
+                                    <p>huy1992nd@gmail.com</p>
                                     <p>hahadaubo@gmail.com</p>
                                 </div>
                             </div>
@@ -50,22 +101,49 @@ function Contact(props) {
                             <div className="contact-form-content pt-sm-55 pt-xs-55">
                                 <h3 className="contact-page-title">Tell Us Your Message</h3>
                                 <div className="contact-form">
-                                    <form id="contact-form" action="http://demo.hasthemes.com/limupa-v3/limupa/mail.php" method="post">
+                                    {error && <p style={{ color: 'red' }}>{error}</p>}
+                                    {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+                                    <form id="contact-form" onSubmit={handleSubmit}>
                                         <div className="form-group">
                                             <label>Your Name <span className="required">*</span></label>
-                                            <input type="text" name="customerName" id="customername" required />
+                                            <input
+                                                type="text"
+                                                name="customerName"
+                                                id="customername"
+                                                value={formData.customerName}
+                                                onChange={handleInputChange}
+                                                required
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>Your Email <span className="required">*</span></label>
-                                            <input type="email" name="customerEmail" id="customerEmail" required />
+                                            <input
+                                                type="email"
+                                                name="customerEmail"
+                                                id="customerEmail"
+                                                value={formData.customerEmail}
+                                                onChange={handleInputChange}
+                                                required
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>Subject</label>
-                                            <input type="text" name="contactSubject" id="contactSubject" />
+                                            <input
+                                                type="text"
+                                                name="contactSubject"
+                                                id="contactSubject"
+                                                value={formData.contactSubject}
+                                                onChange={handleInputChange}
+                                            />
                                         </div>
                                         <div className="form-group mb-30">
                                             <label>Your Message</label>
-                                            <textarea name="contactMessage" id="contactMessage" ></textarea>
+                                            <textarea
+                                                name="contactMessage"
+                                                id="contactMessage"
+                                                value={formData.contactMessage}
+                                                onChange={handleInputChange}
+                                            ></textarea>
                                         </div>
                                         <div className="form-group">
                                             <input type="submit" value="Send" className="li-btn-3" name="submit" />

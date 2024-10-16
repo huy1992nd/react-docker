@@ -75,15 +75,15 @@ function Footer(props) {
                                 <ul className="des">
                                     <li>
                                         <span>Address: </span>
-                                    828 Sư Vạn Hạnh, Quận 10, TP.HCM
+                                    Ngõ 8, Cù chính Lan, Thanh xuân, Hà Nôi
                                 </li>
                                     <li>
                                         <span>Phone: </span>
-                                        <a href="#">0763557366</a>
+                                        <a href="#">0393949169</a>
                                     </li>
                                     <li>
                                         <span>Email: </span>
-                                        <a href="mailto://tienkim9920@gmail.com">tienkim9920@gmail.com</a>
+                                        <a href="mailto://tienkim9920@gmail.com">huy1992nd@gmail.com</a>
                                     </li>
                                 </ul>
                             </div>
